@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Human Water Security</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+<!--[if lte IE 8]>
+  <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+<![endif]-->
+
+
+<!-- include google maps library *before* load cartodb.js -->
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<!-- include cartodb.js library -->
+<script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.uncompressed.js"></script>
+
+<style type="text/css"> 
+
+body { 
+text-align:justify;  
+margin:auto; 
+padding:1em; 
+color:black; 
+background-color:#aacc99; 
+font:1em 'Helvetica Neue', Arial, Verdana, sans-serif; 
+line-height:1.4em; }
+a { color:crimson; font-weight:bold; }
+#header {text-align:center; margin:1.5em 0;}
+#map { height: 700px; 
+padding: 0;
+margin: 0;
+}
+</style> 
+</head>
+<body>
+<div class="container">
+  <p>
+Introductory text on Human Water Security.
+  </p>
+  <p>  </p>
+  <div class="row">
+    <div class="span12"> 
+      <div id="map"></div>
+      <script>
+      window.onload = function() {
+        cartodb.createVis('map', 'http://asrc.cartodb.com/api/v2/viz/9cfc68f0-ea4d-11e2-8078-3085a9a9563c/viz.json', {
+          sharable: true,
+          //title: true,
+          description:true,
+          search:true,
+          tiles_loader: true,
+          center_lat: 0,
+          center_lon: 0,
+          zoom: 3
+        })
+        .done(function(vis, layers) { 
+          // layer 0 is the base layer
+          // layer 1 is the cartodb layer
+          // setInteraction disabled by default
+          layers[1].setInteraction(true);
+          layers[1].on('featureOver', function(e, pos, latlng, data) {
+            cartodb.log.log(e, pos, latlng, data); 
+          });
+
+          // if you need the map variable, get it
+          // map = vis.getNativeMao();
+          // add map.whatever() to set zoom, etc
+        })
+        .error(function(err) {
+          console.log(err);
+        });
+       }
+      </script>
+      <br><br/>
+    </div> 
+  <div id="header">
+    <h1>Human Water Security</h1>
+  </div>
+    <div class="span6">
+      <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'test'; 
+          var disqus_url = 'http://rose.ccny.cuny.edu/~florian/hws/index.html';
+	          /* * * DON'T EDIT BELOW THIS LINE * * */
+	    (function() {
+	      var dsq = document.createElement('script'); 
+	      dsq.type = 'text/javascript'; dsq.async = true;
+	      dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+	      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq); })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+    <div class="span4">
+      <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Transitional" /></a>
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/us/88x31.png" /></a>
+      <iframe src="http://ghbtns.com/github-btn.html?user=flengyel&amp;repo=WallStreetDollar&amp;type=fork" width="53" height="20"></iframe>
+    </div>
+    <div class="span6">
+      <div class="g-plusone" data-annotation="inline" data-width="300"></div>
+      <script type="text/javascript">
+        (function() { var po = document.createElement('script'); 
+          po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/plusone.js';
+          var s = document.getElementsByTagName('script')[0]; 
+          s.parentNode.insertBefore(po, s); })();
+      </script>
+    </div>
+    <div class="span6">
+      <small>
+      Human Water Threat by <a href="https://plus.google.com/u/0/111972627358501525662/posts" property="cc:attributionName" rel="cc:attributionURL">Tian Luan and Florian Lengyel</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/us/">Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States License</a>.
+      </small>
+    </div>
+  </div> 
+</div>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
