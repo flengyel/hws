@@ -28,10 +28,13 @@ margin:auto;
 padding:1em; 
 }
 */
-#map  { height: 700px; 
+#map { height: 700px; 
 padding: 0;
 margin: 0; 
 }
+#map img { max-width: none; }
+/* #map img tag fixes CartoDB CSS problem in FireFox. Note that
+   the fix is sensitive to the placement of comments in the CSS!!! */
 </style> 
 </head>
 <body>
