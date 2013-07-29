@@ -67,20 +67,37 @@ instructions replaces this.
           tiles_loader: true,
           center_lat: 0,
           center_lon: 0,
-          zoom: 3
+          zoom: 3,
+          infowindow: false  // maybe cartodb is grabbing the value from us if the default is true
         })
         .done(function(vis, layers) { 
           // layer 0 is the base layer
           // layer 1 is the cartodb layer
           // setInteraction disabled by default
           layers[1].setInteraction(true);
-          layers[1].on('featureOver', function(e, pos, latlng, data) {
-            cartodb.log.log(e, pos, latlng, data); 
+          layers[1].on('featureOver', function(e, latlng, pos,  data) {
+            console.log('MouseHover::'+'pos:'+pos+' latlng:'+latlng+
+                         ' cartdb_id:'+data.cartodb_id);
+          });
+          layers[1].on('featureClick', function(e, latlng, pos, data) {
+            // NOTE: to get the value we must do a query
+            console.log('Mouseclick::'+'pos:'+pos+' latlng:'+latlng+
+                         ' cartdb_id:'+data.cartodb_id);
+            var sql = new cartodb.SQL({ user: 'asrc' });
+            sql.execute("SELECT ST_AsGeoJSON(the_geom),value FROM adjusted_hws_threat WHERE cartodb_id = " + data.cartodb_id)
+            .done(function(data) {
+               console.log(data.rows);
+            })
+            .error(function(errors) {
+    // errors contains a list of errors
+    console.log("error:" + err);
+            })
           });
 
           // if you need the map variable, get it
-          // map = vis.getNativeMao();
+          // map = vis.getNativeMap();
           // add map.whatever() to set zoom, etc
+          map = vis.getNativeMap();
         })
         .error(function(err) {
           console.log(err);
