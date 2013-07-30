@@ -86,7 +86,9 @@ instructions replaces this.
             var sql = new cartodb.SQL({ user: 'asrc' });
             sql.execute("SELECT ST_AsGeoJSON(the_geom),value FROM adjusted_hws_threat WHERE cartodb_id = " + data.cartodb_id)
             .done(function(data) {
-               console.log(data.rows);
+               // here we illustrate how to get the values -- we will later insert the
+               // a user selected value (not the one we recovered), a cartodb_id and the geom, I guess.
+               console.log(data.rows, data.rows[0].st_asgeojson, data.rows[0].value, latlng);
             })
             .error(function(errors) {
     // errors contains a list of errors
