@@ -47,9 +47,9 @@
 
 <!-- Leaflet -->
   <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
-  <script type="text/javascript" src="../js/wax.leaf.min.js"></script>
-  <script type="text/javascript" src="../dist/cartodb-leaflet-min.js"></script>
-  <script type="text/javascript" src="../dist/cartodb-popup-min.js"></script>
+  <script type="text/javascript" src="js/wax.leaf.min.js"></script>
+  <script type="text/javascript" src="dist/cartodb-leaflet-min.js"></script>
+  <script type="text/javascript" src="dist/cartodb-popup-min.js"></script>
 
 <style>
 #map { height: 700px; padding: 0; margin: 0; }
@@ -71,7 +71,8 @@
         <p>This interactive survey of Human Water Security (HWS) is
            based on the first global-scale initiative to quantify the 
            impact of human-induced stressors on human water security 
-           and riverine biodiversity <a href="#Nature2010">[1]</a>. 
+           and riverine biodiversity 
+           <a href="#Nature2010">(Vörösmarty, 2010)</a>. 
            The map illustrates global threats 
            to Human Water Security (HWS) accounting for beneficial 
            investments in water infrastructure and management such 
@@ -83,7 +84,8 @@
         <!--Copy and paste the div below for creating content blocks-->
         <h3>Instructions</h3>
         <p>
-           Researchers at the CUNY Advanced Science Research Center and CUASI 
+           Researchers at the 
+           <a href="http://asrc.cuny.edu/crossroads">CUNY Advanced Science Research Center</a> and <a href="http://www.cuahsi.org">CUAHSI</a> 
            seek your opinion of the water resources accessible to you. You 
            may select your location on the map, provide your opinion, tell 
            your story about the water resources in your area, and provide a 
@@ -91,13 +93,15 @@
         </p>
         <h3>Sources</h3>
         <p>
-        <a name="Nature2010">1.</a> C. J. Vörösmarty, P. B. McIntyre, M. O. Gessner, D. Dudgeon, 
+        C. J. Vörösmarty, P. B. McIntyre, M. O. Gessner, D. Dudgeon, 
         A. Prusevich, P. Green, S. Glidden, S. E. Bunn, C. A. Sullivan,	
         C. Reidy Liermann &amp; P. M. Davies.
+        <a name="Nature2010">
         <a href="http://www.nature.com/nature/journal/v467/n7315/full/nature09440.html#/supplementary-information">
         <i>Global threats to human water security and river biodiversity.</i>
-        </a>
-        Nature <strong>467</strong>, 555–561 (30 September 2010). 
+        </a></a>
+        Nature <strong>467</strong>, 555–561 (30 September 2010).
+
         </p>
 	Further information can be obtained from <a href="http://riverthreat.net">riverthreat.net</a>
 
@@ -114,6 +118,8 @@
       </div>
     </div>
     <script type="text/javascript">
+      HWS = window.HWS || {};  // in case we move to backbone
+
       window.onload = function() {
         cartodb.createVis('map', 'http://asrc.cartodb.com/api/v2/viz/9cfc68f0-ea4d-11e2-8078-3085a9a9563c/viz.json', {
           sharable: true,
@@ -132,22 +138,28 @@
           // setInteraction disabled by default
           layers[1].setInteraction(true);
           layers[1].on('featureOver', function(e, latlng, pos,  data) {
+            document.body.style.cursor = 'pointer';
             console.log('MouseHover::'+'pos:'+pos+' latlng:'+latlng+
                          ' cartdb_id:'+data.cartodb_id);
           });
+          layers[1].on('featureOut', function(ev, latlng, pos, data) {
+            document.body.style.cursor = 'default';
+            // you may want to "trigger" an event
+          });
           layers[1].on('featureClick', function(e, latlng, pos, data) {
-            // NOTE: to get the value we must do a query
-            
-            map = vis.getNativeMap();
+            document.body.style.cursor = 'default'; 
+            HWS.map = vis.getNativeMap();
             var marker = new google.maps.Marker({
-            position: google.maps.LatLng(latlng.x,latlng.y),
-            map: map,
-            title: 'Hello World!'
+            position: new google.maps.LatLng(latlng[0],latlng[1]),
+            map: HWS.map,
+            title: 'x:'+latlng[0]+', y:'+latlng[1],
             });
-            marker.setMap(map);
+            marker.setMap(HWS.map);
 
             console.log('Mouseclick::'+'pos:'+pos+' latlng:'+latlng+
+                          //' latlng.x:'+latlng[0] + ' latlng.y:'+latlng[1]+
                          ' cartdb_id:'+data.cartodb_id);
+            // NOTE: to get the value we must do a query
             var sql = new cartodb.SQL({ user: 'asrc' });
             sql.execute("SELECT ST_AsGeoJSON(the_geom),value FROM adjusted_hws_threat WHERE cartodb_id = " + data.cartodb_id)
             .done(function(data) {
