@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <!--Edit the title of the page-->
-    <title>Human Water Security</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <title>Human Water Security Survey</title>
+    <meta name="description" content="Human Water Security Survey for SIWI">
+    <meta name="author" content="Florian Lengyel and Luan Tian">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
@@ -16,8 +16,6 @@
     <!--Switch between the different themes changing the stylesheet below - light-theme.css |dark-theme.css -->
     <link rel="stylesheet" href="css/light-theme.css">
     <link rel="stylesheet" href="css/makeitresponsive.css">
-
-
 
 <!-- Bootstrap CSS -->
 <!--
@@ -119,6 +117,7 @@
     </div>
     <script type="text/javascript">
       HWS = window.HWS || {};  // in case we move to backbone
+      marker = HWS.marker || {}; // belongs in model, in any case
 
       window.onload = function() {
         cartodb.createVis('map', 'http://asrc.cartodb.com/api/v2/viz/9cfc68f0-ea4d-11e2-8078-3085a9a9563c/viz.json', {
@@ -152,20 +151,24 @@
             var marker = new google.maps.Marker({
             position: new google.maps.LatLng(latlng[0],latlng[1]),
             map: HWS.map,
-            title: 'x:'+latlng[0]+', y:'+latlng[1],
+            title: 'x:'+latlng[0].toFixed(3)+', y:'+latlng[1].toFixed(3),
             });
+            if (HWS.marker) { // if there is a previous
+               HWS.marker.setMap(null); // destroy the previous
+            }
             marker.setMap(HWS.map);
+            HWS.marker = marker;
 
             console.log('Mouseclick::'+'pos:'+pos+' latlng:'+latlng+
-                          //' latlng.x:'+latlng[0] + ' latlng.y:'+latlng[1]+
                          ' cartdb_id:'+data.cartodb_id);
-            // NOTE: to get the value we must do a query
+            // NOTE: to get the HWS value we must do a query
             var sql = new cartodb.SQL({ user: 'asrc' });
             sql.execute("SELECT ST_AsGeoJSON(the_geom),value FROM adjusted_hws_threat WHERE cartodb_id = " + data.cartodb_id)
             .done(function(data) {
-               // here we illustrate how to get the values -- we will later insert the
-               // a user selected value (not the one we recovered), a cartodb_id and the geom, I guess.
-               console.log(data.rows, data.rows[0].st_asgeojson, data.rows[0].value, latlng);
+               // we illustrate how to get the values 
+               // we will later insert a user selected value 
+               console.log(data.rows, data.rows[0].st_asgeojson, 
+                                      data.rows[0].value, latlng);
                
             })
             .error(function(errors) {
